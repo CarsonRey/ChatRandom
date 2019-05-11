@@ -3,17 +3,13 @@ import Message from '../components/Message'
 
 class MessageWindow extends Component {
 
-  state = {
-    messages:[]
-  }
-
   render() {
 
-    let {messages} = this.state
+    let {messages} = this.props
 
     return (
       <div className="MessageWindow">
-        {this.state.messages.length == false ?
+        {messages.length == false ?
         <div>What are you waiting for? Send a message!</div>
           :
         <div>

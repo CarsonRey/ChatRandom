@@ -7,39 +7,54 @@ let socket = io('http://localhost:3001');
 
 
 
-const socketUrl = ``
+
 class ChatWindow extends Component {
 
   constructor(props){
     super(props)
     this.state = {
       username: this.props.username,
-      messages: []
+      messages: [],
+      endpoint: "localhost:3001"
     }
-    this.socket = io('localhost:3001')
+    // this.socket = io('localhost:3001')
   }
 
 
-  componentWillMount(){
+  componentDidMount(){
 
   }
 
   initSocket = () => {
-    const socket = io(socketUrl)
+
     socket.on('connect', () => {
       console.log("Connected")
     })
-    this.setState({
-      socket: socket
-    })
+    // this.setState({
+    //   socket: socket
+    // })
   }
 
+  sendMessage = (message) => {
+    let {username} = this.state
+    socket.emit('send message', {username: username, message: message})
+  }
+
+
+
   render() {
+    const socket = io(this.state.endpoint)
+    socket.once('send message', (message) => {
+      this.setState({
+        messages: [...this.state.messages, message]
+      })
+    } )
     console.log("in ChatWindow, user is: ", this.state.username)
+
     return (
       <div>
-        <MessageWindow />
-        <TextField handleChange={this.props.handleChange}/>
+        <MessageWindow messages={this.state.messages} />
+        <TextField sendMessage={this.sendMessage}/>
       </div>
     );
   }
