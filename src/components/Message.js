@@ -1,8 +1,14 @@
 import React from 'react';
 
-const Message = ({message}) => (
+const Message = ({isNotification, message}) => (
   <div className="Message">
-    <p><span>{message.username}</span>: {message.message}</p>
+
+    { isNotification ?
+      <p><span>{message.message}</span></p>
+      :
+      <p><span>{message.username}</span>: {message.message}</p>
+    }
+
   </div>
 );
 

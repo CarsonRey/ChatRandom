@@ -9,34 +9,85 @@ const app = express();
 const server = app.listen(`${port}`, ()=> {
   console.log(`listening on port ${port}`)
 })
-//
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html')
-})
+
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/index.html')
+// })
+
 
 const io = socket(server)
 
 let users = {}
 let usernames = []
 let pairedUserSocketId;
+let currentUserSocketId;
+let rooms = {
+  roomNames: []
+}
 // let otherServer = {
 //   "connections" : 0,
 //   "chatrooms" : [{person1: null, person2: null}]
 // }
 
-const checkUser = (user) => {
+// rooms = {
+// roomNames: []
+// roomName: {people: 1}
+// }
 
-}
 
 io.on('connection', (socket) =>{
   console.log('made socket connection', socket.id)
 
-  // socket.on('join room', (room) => {
-  //   socket.join(room)
-  //   socket.to(room).emit('user joined', socket.id)
-  // })
+// --------- JOIN ROOM --------- //
+  socket.on('join room', (user) => {
+    console.log(user, "wants To Join")
 
+    let roomToJoin = rooms.roomNames.find(roomName => {
+            rooms[roomName].people === 1
+          })
+
+    if(!rooms.roomNames.length || roomToJoin == false){
+      // if there are no rooms to join or none with open spots, we make a room and join it, add roomname to rooms[roomNames]
+      socket.join(socket.id)
+      rooms[socket.id] = {people: 1}
+      rooms.roomNames.push(socket.id)
+
+      socket.emit('notification', {notification: true, message: "Waiting for another user to connect...."})
+    } else {
+      socket.join(roomToJoin)
+      rooms[roomToJoin].people = 2
+
+      io.in(roomToJoin).emit('notification', {notification: true, message: "You're now in a room with the ID of: ", roomToJoin})
+    }
+
+
+  console.log(rooms)
+//     if(!rooms[room] || (rooms[room] && rooms[room].people === 2)){
+//       // if the room doesn't exist or that room is full, make room out of currentUser socketId and join it. Add socketId to list of rooms
+//
+//       socket.join(socket.id)
+//       room[roomNames].push(socket.id)
+//
+//       io.socket.connected[socket.id].emit('notification', { notification: true, message: "waiting to pair you with another user!"})
+//     } else {
+//
+// // does this room exist or not
+//       socket.join(roomtoJoin)
+//     }
+//
+//     socket.join(room)
+//     socket.to(room).emit('user joined', socket.id)
+  })
+
+// ---------  HANDLING NOTIFICATIONS  --------- //
+  socket.on('notification', (data) => {
+    io.socket.connected[socket.id].emit('send message', data)
+  })
+
+// --------- SETTING THE USER --------- //
   socket.on('set user', (currentUser) => {
+
+
 
     users[currentUser] = {socketId: socket.id, paired: false}
     usernames.push(currentUser)
@@ -46,8 +97,6 @@ io.on('connection', (socket) =>{
     //   if(users[user].socketId !== users[currentUser].socketId ){
     //     if ()
     //     pairedUserSocketId = users[user].socketId
-    //     users[user].paired = true
-    //     users[currentUser].paired = true
     //   } else {
     //     console.log("UR V ALONE")
     //   }
@@ -68,26 +117,36 @@ io.on('connection', (socket) =>{
 
   })
   pairedUserSocketId = pairedUser && users[pairedUser].socketId
+
+  if(!pairedUserSocketId){
+
+  }
   // otherUsers.find(user => {})
 
   console.log(pairedUserSocketId)
+  console.log(users)
 
 })
 
 
-  // console.log(Object.keys(io.sockets.connected))
+// user the first user's socketId as a key pointing to an array
+// the array contains the usernames
+// if length is one, push current user into
+// go through
 
+// SENDING A MESSAGE
   socket.on('send message', (data) => {
+    currentUserSocketId = socket.id
     console.log("the data is: ", data)
-    io.to(`${pairedUserSocketId}`).emit('send message', data)
+    io.sockets.connected[socket.id].emit('send message', data)
   })
-
+// HOPPING TO NEXT USER
   socket.on('hop', (data) => {
     console.log("hop")
     // io.sockets.emit('hop', data)
   })
 
-
+// DISCONNECTING
   socket.once('disconnect', () => {
     console.log('user disconnected')
   })
@@ -102,9 +161,3 @@ io.on('connection', (socket) =>{
 //     username: username.value
 //   })
 // })
-
-
-
-
-
-// const socket = require('./socket')

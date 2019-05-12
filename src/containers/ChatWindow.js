@@ -40,13 +40,14 @@ class ChatWindow extends Component {
 
   emitMessage = (message) => {
     let {username} = this.state
-    this.props.socket.emit('send message', {username: username, message: message})
+    this.props.socket.emit('send message', {username: username, message: message, notification: false})
   }
 
   render() {
     const {socket} = this.props
 
     socket.once('send message', (message) => {
+      // debugger
       this.setState({
         messages: [...this.state.messages, message]
       })

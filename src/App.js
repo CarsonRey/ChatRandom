@@ -11,18 +11,25 @@ class App extends React.Component {
   state = {
     username: null,
     endpoint: "localhost:3001",
-    pairedUser: null
+    pairedUser: null,
+    room: null,
+    notifications: []
   }
+
+  // componentWillUnmount(){
+  //   socket.close()
+  // }
 
   handleChange = (username) => {
     this.setState({
       username: username
-    }, () => socket.emit('set user', this.state.username))
+    }, () => socket.emit('join room', this.state.username))
   }
 
   render(){
 
     socket.once('set user', (user)=> {
+
       this.setState({
         pairedUser: user
       }, ()=> {console.log("HOLLERRR")})

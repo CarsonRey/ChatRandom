@@ -27,7 +27,7 @@ class MessageWindow extends Component {
         <div>What are you waiting for? Send a message!</div>
           :
         <div >
-          {messages.map((message, idx) => <Message key={idx} message={message} />)}
+          {messages.map((message, idx) => <Message isNotification={message.notification} key={idx} message={message} />)}
           <div ref={this.messagesEnd}/>
         </div>
         }
