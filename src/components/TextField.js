@@ -6,21 +6,34 @@ class TextField extends Component {
     message: ""
   }
 
+  sendMessageAndClearState = (e, message) => {
+    if (e && e.keyCode === 13){
+      this.props.sendMessage(message)
+      this.clearTextField()
+    }
+  }
+
+  clearTextField = () => {
+    this.setState({
+      message: ""
+    })
+  }
+
   render() {
     let {message} = this.state
     let {sendMessage} = this.props
 
     return (
-      <div className="textfield">
-        <input
-          type="text"
+      <div className="TextField">
+        <textarea
+          type="textarea"
           placeholder="Type here.."
           value={message}
           onChange={(e) => { this.setState({message: e.target.value})}}
-          onKeyUp={(e) => {e.keyCode === 13 && sendMessage(message)}}
+          onKeyUp={(e) => {this.sendMessageAndClearState(e, message)}}
         />
 
-        <div onClick={() => {sendMessage(message)}}>Send</div>
+        <div className="send" onClick={(e) => {sendMessage(message); this.clearTextField(); }}>Send</div>
       </div>
     );
   }

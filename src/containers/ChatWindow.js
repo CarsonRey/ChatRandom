@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import MessageWindow from '../containers/MessageWindow'
 import TextField from '../components/TextField'
-import io from 'socket.io-client'
-
-let socket = io('http://localhost:3001');
-
-
 
 
 class ChatWindow extends Component {
@@ -15,46 +10,56 @@ class ChatWindow extends Component {
     this.state = {
       username: this.props.username,
       messages: [],
-      endpoint: "localhost:3001"
+      pairedUser: null
     }
-    // this.socket = io('localhost:3001')
   }
 
+  checkMessageForCommands = (message) => {
+    let text = message.split(" ")
 
-  componentDidMount(){
+    if(text.includes("/delay")){
+      let time = parseInt(text[1])
+      let cutMessage = text.slice(2).join(" ")
+
+      this.sendMessage(cutMessage, time)
+    } else if (text.includes("/hop")){
+      console.log("hop")
+    } else{
+      this.sendMessage(message);
+    }
 
   }
 
-  initSocket = () => {
-
-    socket.on('connect', () => {
-      console.log("Connected")
-    })
-    // this.setState({
-    //   socket: socket
-    // })
+  sendMessage = (message, time) => {
+    if(time){
+      window.setTimeout(() => {this.emitMessage(message)}, time)
+    }else {
+      this.emitMessage(message)
+    }
   }
 
-  sendMessage = (message) => {
+  emitMessage = (message) => {
     let {username} = this.state
-    socket.emit('send message', {username: username, message: message})
+    this.props.socket.emit('send message', {username: username, message: message})
   }
-
-
 
   render() {
-    const socket = io(this.state.endpoint)
+    const {socket} = this.props
+
     socket.once('send message', (message) => {
       this.setState({
         messages: [...this.state.messages, message]
       })
-    } )
-    console.log("in ChatWindow, user is: ", this.state.username)
+    })
+
+
+    // console.log("in ChatWindow, user is: ", this.state.username)
 
     return (
-      <div>
+      <div className="ChatWindow">
+        <h2>ChatRandom</h2>
         <MessageWindow messages={this.state.messages} />
-        <TextField sendMessage={this.sendMessage}/>
+        <TextField sendMessage={this.checkMessageForCommands}/>
       </div>
     );
   }

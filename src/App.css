@@ -2,25 +2,76 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.SignUp{
+  border: 1px solid black;
+  border-radius: 4px;
+  width: 80%;
+  height: 80vh;
+  margin: auto;
+  margin-top: 1%;
+  padding-top: 10%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.ChatWindow{
+  border: 1px solid black;
+  border-radius: 4px;
+  width: 80%;
+  height: 80vh;
+  margin: auto;
+  margin-top: 1%;
+  /* padding-top: 10%; */
 }
 
-.App-link {
-  color: #61dafb;
+.MessageWindow{
+ height: 50vh;
+ border: 1px solid red;
+ padding-bottom: 1%;
+ overflow-y: scroll;
+}
+
+.Message{
+  border: 1px solid black;
+  border-radius: 4px;
+  margin: auto;
+  margin-top: 1%;
+  width: 90%;
+}
+
+.TextField{
+  height: 10vh ;
+  background-color: lightgrey;
+ display: grid;
+ grid-template-columns: 80% 20%;
+}
+
+textarea{
+  display: inline-block;
+  font-size: 17px;
+  border: none;
+  border-top: .5px solid lightgrey;
+  height: 8vh;
+}
+
+input{
+  width: 60%;
+  height: 10%;
+  font-size: 20px;
+}
+
+.send{
+  padding-top: 11%;
+  border-top:  .5px solid lightgrey;
+  border-left: .5px solid lightgrey;
+
+}
+
+.chat{
+  border: 1px solid black;
+  border-radius: 4px;
+  width : 30%;
+  margin: auto;
+  margin-top: 5%;
+  padding: 2% 0;
 }
 
 @keyframes App-logo-spin {
