@@ -10,7 +10,6 @@ class ChatWindow extends Component {
     this.state = {
       username: this.props.username,
       messages: [],
-      pairedUser: null
     }
   }
 
@@ -50,7 +49,7 @@ class ChatWindow extends Component {
       // debugger
       this.setState({
         messages: [...this.state.messages, message]
-      })
+      }, () => {console.log(this.state.messages)})
     })
 
 

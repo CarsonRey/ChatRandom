@@ -43,23 +43,34 @@ io.on('connection', (socket) =>{
     console.log(user, "wants To Join")
 
     let roomToJoin = rooms.roomNames.find(roomName => {
-            rooms[roomName].people === 1
+            return rooms[roomName].people === 1
           })
 
-    if(!rooms.roomNames.length || roomToJoin == false){
+          console.log("ROOM TO JOIN IS ", roomToJoin)
+          console.log("THIS SHOULD BE WORKING ", !roomToJoin)
+      // user the first user's socketId as a key pointing to an array
+      // the array contains the usernames
+      // if length is one, push current user into
+
+    if( !roomToJoin || !rooms.roomNames.length ){
       // if there are no rooms to join or none with open spots, we make a room and join it, add roomname to rooms[roomNames]
-      socket.join(socket.id)
-      rooms[socket.id] = {people: 1}
-      rooms.roomNames.push(socket.id)
+      socket.join(`${socket.id}`)
+      rooms[`${socket.id}`] = {people: 1}
+      rooms.roomNames.push(`${socket.id}`)
 
-      socket.emit('notification', {notification: true, message: "Waiting for another user to connect...."})
-    } else {
+      io.sockets.emit('send message', {user: user, room: socket.id, notification: true, message: "Waiting for another user to connect...."})
+// console.log("THESE ARE CONNECTED SOCKETS",io.sockets.connected)
+// console.log("THIS IS THE CONNECT SOCKET", io.sockets.connected[socket.id])
+      // io.sockets.connected[`${socket.id}~`].emit('send message', {user: user, room: socket.id, notification: true, message: "Waiting for another user to connect...."})
+    } else if (roomToJoin) {
+
+
+
       socket.join(roomToJoin)
-      rooms[roomToJoin].people = 2
+      rooms[roomToJoin].people++
 
-      io.in(roomToJoin).emit('notification', {notification: true, message: "You're now in a room with the ID of: ", roomToJoin})
+      io.sockets.emit('send message', {notification: true, message: "You've been connected with random user!"})
     }
-
 
   console.log(rooms)
 //     if(!rooms[room] || (rooms[room] && rooms[room].people === 2)){
@@ -70,13 +81,13 @@ io.on('connection', (socket) =>{
 //
 //       io.socket.connected[socket.id].emit('notification', { notification: true, message: "waiting to pair you with another user!"})
 //     } else {
-//
-// // does this room exist or not
-//       socket.join(roomtoJoin)
-//     }
-//
-//     socket.join(room)
 //     socket.to(room).emit('user joined', socket.id)
+  })
+
+  // --------- SENDING A MESSAGE --------- //
+  socket.on('send message', (data) => {
+
+    io.sockets.emit('send message', {notification: data.notification, username: data.username, message: data.message, other: "hello"})
   })
 
 // ---------  HANDLING NOTIFICATIONS  --------- //
@@ -129,17 +140,7 @@ io.on('connection', (socket) =>{
 })
 
 
-// user the first user's socketId as a key pointing to an array
-// the array contains the usernames
-// if length is one, push current user into
 // go through
-
-// SENDING A MESSAGE
-  socket.on('send message', (data) => {
-    currentUserSocketId = socket.id
-    console.log("the data is: ", data)
-    io.sockets.connected[socket.id].emit('send message', data)
-  })
 // HOPPING TO NEXT USER
   socket.on('hop', (data) => {
     console.log("hop")

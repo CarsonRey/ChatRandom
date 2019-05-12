@@ -12,8 +12,7 @@ class App extends React.Component {
     username: null,
     endpoint: "localhost:3001",
     pairedUser: null,
-    room: null,
-    notifications: []
+    room: null
   }
 
   // componentWillUnmount(){
@@ -28,15 +27,16 @@ class App extends React.Component {
 
   render(){
 
-    socket.once('set user', (user)=> {
-
+    socket.on('join room', (data)=> {
+      console.log("IN APP JS HITTING JOIN ROOM")
       this.setState({
-        pairedUser: user
+        room: data.room
       }, ()=> {console.log("HOLLERRR")})
     })
 
     return (
       <div className="App">
+        {/* <ChatWindow socket={io(this.state.endpoint)} username={this.state.username} /> */}
       {this.state.username === null ? <SignUp handleChange={this.handleChange}/> : <ChatWindow socket={io(this.state.endpoint)} username={this.state.username} />  }
       </div>
     );
