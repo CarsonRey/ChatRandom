@@ -16,9 +16,9 @@ class ChatWindow extends Component {
 
 
   shouldComponentUpdate(nextProps, nextState){
-    debugger
-    // only update if we don't have a room
-    return this.state.room !== null || (this.state.users !== nextState.users)
+    // debugger
+    // only update if we get a room string
+    return this.state.room !== null
   }
 
   checkMessageForCommands = (message) => {
@@ -89,16 +89,17 @@ class ChatWindow extends Component {
     } else if (this.state.room){
       this.listenForSpecificMessage(this.state.users, this.state.room)
     }
+    //
+    // if(this.state.users){
+    //   this.props.socket.emit('update users', this.state.users)
+    // }
 
-    if(this.state.users){
-  this.props.socket.emit('update users', this.state.users)
-  this.props.socket.once('update users', (data) => {
-    // debugger
-    this.setState({
-      users: data.users
+    this.props.socket.once('update users', (data) => {
+      debugger
+      this.setState({
+        users: data.users
+      })
     })
-  })
-}
 
 
 
