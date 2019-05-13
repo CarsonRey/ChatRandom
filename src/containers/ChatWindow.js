@@ -18,8 +18,17 @@ class ChatWindow extends Component {
   shouldComponentUpdate(nextProps, nextState){
     // debugger
     // only update if we get a room string
-    return this.state.room !== null
-  }
+
+      return this.state.room === null
+      // if (this.state.room === null){
+      //   return this.state.room !== nextState.room
+      // } else {
+      //   return this.state.users !== nextState.users
+      // }
+
+    }
+
+
 
   checkMessageForCommands = (message) => {
     let text = message.split(" ")
