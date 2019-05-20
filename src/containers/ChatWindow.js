@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import MessageWindow from '../containers/MessageWindow'
 import TextField from '../components/TextField'
-import {connect} from 'react-redux'
-import {updateUserRoom} from '../store/actions'
+// import {connect} from 'react-redux'
+// import {updateUserRoom} from '../store/actions'
 
 class ChatWindow extends Component {
 
@@ -16,16 +16,8 @@ class ChatWindow extends Component {
 
 
   shouldComponentUpdate(nextProps, nextState){
-    // debugger
     // only update if we get a room string
-
       return this.state.room === null
-      // if (this.state.room === null){
-      //   return this.state.room !== nextState.room
-      // } else {
-      //   return this.state.users !== nextState.users
-      // }
-
     }
 
 
@@ -98,20 +90,12 @@ class ChatWindow extends Component {
     } else if (this.state.room){
       this.listenForSpecificMessage(this.state.users, this.state.room)
     }
-    //
-    // if(this.state.users){
-    //   this.props.socket.emit('update users', this.state.users)
-    // }
 
     this.props.socket.once('update users', (data) => {
-      debugger
       this.setState({
         users: data.users
       })
     })
-
-
-
 
 
 console.log("props",this.props)
@@ -128,11 +112,13 @@ console.log("state",this.state)
 
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUserRoom: (data) => dispatch(updateUserRoom(data))
-  }
-}
+export default ChatWindow;
+
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     updateUserRoom: (data) => dispatch(updateUserRoom(data))
+//   }
+// }
 
 // const mapStateToProps = (state) => {
 //   return {
@@ -140,4 +126,4 @@ const mapDispatchToProps = (dispatch) => {
 //   }
 // }
 
-export default connect(null, mapDispatchToProps)(ChatWindow);
+// export default connect(null, mapDispatchToProps)(ChatWindow);
